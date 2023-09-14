@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Recorder</title>
+</head>
+<body>
+    <h1>Audio Recorder</h1>
+    <button id="startRecording">Start Recording</button>
+    <button id="stopRecording">Stop Recording</button>
+    <button id="playAudio">Play Audio</button>
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+        let audioChunks = [];
+        let mediaRecorder;
+
+        document.getElementById("startRecording").addEventListener("click", () => {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function (stream) {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+                    mediaRecorder.start();
+                });
+        });
+
+        document.getElementById("stopRecording").addEventListener("click", () => {
+            if (mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+            }
+        });
+
+        document.getElementById("playAudio").addEventListener("click", () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            document.getElementById("audioPlayer").src = audioUrl;
+
+            // Send audio data to the server using fetch or another method here
+            fetch("/upload_audio", {
+                method: "POST",
+                body: audioBlob
+            });
+        });
+    </script>
+</body>
+</html>
+
