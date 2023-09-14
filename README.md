@@ -1,7 +1,8 @@
 # Browser-remote-mic-and-audio
 
-This aplication allows you to send Audio over tcp to a server and then allow the server to play the audio to browser
-
+This aplication allows you to send Audio over tcp to a server and then allow the server to play the audio to browser.
+T
+his aplication is using HTML3 mic and audio with Python3 flask as server
 Preeqierment
     pip install pyopenssl
     
